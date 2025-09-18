@@ -643,92 +643,93 @@
     </div>
 
     <script>
-        // Enhanced form validation and functionality
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const emailError = document.getElementById('email-error');
-        const passwordError = document.getElementById('password-error');
-        const togglePassword = document.getElementById('togglePassword');
-        const loginButton = document.getElementById('loginButton');
-        const buttonText = document.querySelector('.button-text');
-        const spinner = document.querySelector('.spinner');
+       // Enhanced form validation and functionality
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const emailError = document.getElementById('email-error');
+const passwordError = document.getElementById('password-error');
+const togglePassword = document.getElementById('togglePassword');
+const loginButton = document.getElementById('loginButton');
+const buttonText = document.querySelector('.button-text');
+const spinner = document.querySelector('.spinner');
+
+// Toggle password visibility
+togglePassword.addEventListener('click', function() {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.textContent = type === 'password' ? '👁️' : '🔒';
+});
+
+// Form validation
+function validateEmail(email) {
+    const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const phoneRe = /^[6-9]\\d{9}$/;
+    return re.test(email) || phoneRe.test(email);
+}
+
+function validatePassword(password) {
+    return password.length >= 6;
+}
+
+emailInput.addEventListener('blur', function() {
+    if (!validateEmail(this.value)) {
+        emailError.textContent = 'Please enter a valid email or 10-digit mobile number';
+        emailError.style.display = 'block';
+    } else {
+        emailError.style.display = 'none';
+    }
+});
+
+passwordInput.addEventListener('blur', function() {
+    if (!validatePassword(this.value)) {
+        passwordError.textContent = 'Password must be at least 6 characters long';
+        passwordError.style.display = 'block';
+    } else {
+        passwordError.style.display = 'none';
+    }
+});
+
+// Enhanced login functionality
+loginButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const isValidEmail = validateEmail(email);
+    const isValidPassword = validatePassword(password);
+    
+    if (!isValidEmail) {
+        emailError.textContent = 'Please enter a valid email or 10-digit mobile number';
+        emailError.style.display = 'block';
+    }
+    
+    if (!isValidPassword) {
+        passwordError.textContent = 'Password must be at least 6 characters long';
+        passwordError.style.display = 'block';
+    }
+    
+    if (isValidEmail && isValidPassword) {
+        // Show loading state
+        buttonText.textContent = 'Logging in...';
+        spinner.style.display = 'block';
+        loginButton.disabled = true;
         
-        // Toggle password visibility
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁️' : '🔒';
-        });
-        
-        // Form validation
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phoneRe = /^[6-9]\d{9}$/;
-            return re.test(email) || phoneRe.test(email);
-        }
-        
-        function validatePassword(password) {
-            return password.length >= 6;
-        }
-        
-        emailInput.addEventListener('blur', function() {
-            if (!validateEmail(this.value)) {
-                emailError.textContent = 'Please enter a valid email or 10-digit mobile number';
-                emailError.style.display = 'block';
+        // Simulate API call
+        setTimeout(() => {
+            // Check if "Remember me" is checked
+            const rememberMe = document.getElementById('remember').checked;
+            if (rememberMe) {
+                localStorage.setItem("isLoggedIn", "true"); // persists
             } else {
-                emailError.style.display = 'none';
+                sessionStorage.setItem("isLoggedIn", "true"); // clears on close
             }
-        });
-        
-        passwordInput.addEventListener('blur', function() {
-            if (!validatePassword(this.value)) {
-                passwordError.textContent = 'Password must be at least 6 characters long';
-                passwordError.style.display = 'block';
-            } else {
-                passwordError.style.display = 'none';
-            }
-        });
-        
-        // Enhanced login functionality
-        loginButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            const isValidEmail = validateEmail(email);
-            const isValidPassword = validatePassword(password);
-            
-            if (!isValidEmail) {
-                emailError.textContent = 'Please enter a valid email or 10-digit mobile number';
-                emailError.style.display = 'block';
-            }
-            
-            if (!isValidPassword) {
-                passwordError.textContent = 'Password must be at least 6 characters long';
-                passwordError.style.display = 'block';
-            }
-            
-            if (isValidEmail && isValidPassword) {
-                // Show loading state
-                buttonText.textContent = 'Logging in...';
-                spinner.style.display = 'block';
-                loginButton.disabled = true;
-                
-                // Simulate API call
-                setTimeout(() => {
-                    // Check if "Remember me" is checked
-                    const rememberMe = document.getElementById('remember').checked;
-                    if (rememberMe) {
-                        // In a real app, you would set a long-lived token here
-                        console.log('Remembering user for future logins');
-                    }
-                    
-                    // Redirect to dashboard after successful login
-                    window.location.href = 'index3.html';
-                    
-                }, 2000);
-            }
-        });
+
+            // Redirect to dashboard after successful login
+            window.location.replace("index3.html");  // use replace so back button doesn't reopen login
+        }, 2000);
+    }
+});
+
         
         // Language selector functionality with translations
         const translations = {
@@ -921,3 +922,4 @@
     </script>
 </body>
 </html>
+
