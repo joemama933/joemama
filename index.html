@@ -723,15 +723,9 @@
                         console.log('Remembering user for future logins');
                     }
                     
-                    alert('🎉 Login successful! Welcome to Krishi Saathi Dashboard!');
+                    // Redirect to dashboard after successful login
+                    window.location.href = 'index3.html';
                     
-                    // Reset button state
-                    buttonText.textContent = 'Login to Dashboard';
-                    spinner.style.display = 'none';
-                    loginButton.disabled = false;
-                    
-                    // Here you would redirect to the main dashboard
-                    // window.location.href = 'dashboard.html';
                 }, 2000);
             }
         });
@@ -773,7 +767,7 @@
             },
             gu: {
                 title: "પાછા આવવા બદલ સ્વાગત છે, ખેડૂત!",
-                email: "ઈમેલ અથવા મોબાઈલ નંબર",
+                email: "ઈમેલ અથવા મોબાઈલ नંબર",
                 password: "પાસવર્ડ",
                 remember: "મને યાદ રાખો",
                 forgot: "પાસવર્ડ ભૂલી ગયા?",
