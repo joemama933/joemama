@@ -1457,371 +1457,306 @@
     </div>
 
     <script>
-        // Navigation functions
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Find and activate the clicked nav item
-            const navItems = document.querySelectorAll('.nav-item');
-            for (let item of navItems) {
-                if (item.getAttribute('onclick').includes(sectionId)) {
-                    item.classList.add('active');
-                    break;
-                }
-            }
-            
-            // Close mobile sidebar if open
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('mobile-open');
-            }
+        // Navigation functions 
+function showSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(sectionId).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    const navItems = document.querySelectorAll('.nav-item');
+    for (let item of navItems) {
+        if (item.getAttribute('onclick').includes(sectionId)) {
+            item.classList.add('active');
+            break;
         }
+    }
+    if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+    }
+}
 
-        function toggleMobileSidebar() {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
-        }
+function toggleMobileSidebar() {
+    document.getElementById('sidebar').classList.toggle('mobile-open');
+}
 
-        function changeLanguage(lang) {
-            // In a real app, this would update all text content based on selected language
-            showNotification(`Language changed to ${lang === 'en' ? 'English' : lang === 'hi' ? 'Hindi' : lang === 'pa' ? 'Punjabi' : 'Gujarati'}`);
-        }
+function changeLanguage(lang) {
+    showNotification(`Language changed to ${lang === 'en' ? 'English' : lang === 'hi' ? 'Hindi' : lang === 'pa' ? 'Punjabi' : 'Gujarati'}`);
+}
 
-        // Chat functionality
-        function sendMessage(chatId) {
-            const inputElement = document.getElementById(chatId === 'mainChat' ? 'mainChatInput' : 'dashboardChatInput');
-            const message = inputElement.value.trim();
-            
-            if (message) {
-                const messagesContainer = document.getElementById(chatId);
-                
-                // Add user message
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user';
-                userMessage.innerHTML = `<div class="message-content">${message}</div>`;
-                messagesContainer.appendChild(userMessage);
-                
-                // Clear input
-                inputElement.value = '';
-                
-                // Simulate bot response
-                setTimeout(() => {
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'message bot';
-                    botMessage.innerHTML = `<div class="message-content">${getBotResponse(message)}</div>`;
-                    messagesContainer.appendChild(botMessage);
-                    
-                    // Scroll to bottom
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 1000);
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        }
-
-        function handleChatEnter(event, chatId) {
-            if (event.key === 'Enter') {
-                sendMessage(chatId);
-            }
-        }
-
-        function quickChat(topic) {
-            const questions = {
-                'weather': 'What is the weather forecast for this week?',
-                'fertilizer': 'What fertilizer should I use for my wheat crop?',
-                'market': 'What are the current market prices for wheat?',
-                'crops': 'Which crops are best for my soil type?',
-                'disease': 'How can I identify wheat rust disease?',
-                'irrigation': 'How often should I irrigate my rice field?'
-            };
-            
-            const messagesContainer = document.getElementById('mainChat');
-            
-            // Add user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user';
-            userMessage.innerHTML = `<div class='message-content'>${questions[topic]}</div>`;
-            messagesContainer.appendChild(userMessage);
-            
-            // Show response
-            setTimeout(() => {
-                const botMessage = document.createElement('div');
-                botMessage.className = 'message bot';
-                botMessage.innerHTML = `<div class='message-content'>${getBotResponse(topic)}</div>`;
-                messagesContainer.appendChild(botMessage);
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 1000);
-            
-            // Switch to chat section
-            showSection('chat');
-            
-            // Scroll to bottom
+// Chat functionality
+function sendMessage(chatId) {
+    const inputElement = document.getElementById(chatId === 'mainChat' ? 'mainChatInput' : 'dashboardChatInput');
+    const message = inputElement.value.trim();
+    if (message) {
+        const messagesContainer = document.getElementById(chatId);
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user';
+        userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+        messagesContainer.appendChild(userMessage);
+        inputElement.value = '';
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot';
+            botMessage.innerHTML = `<div class="message-content">${getBotResponse(message)}</div>`;
+            messagesContainer.appendChild(botMessage);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        }, 1000);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+}
 
-        function getBotResponse(input) {
-            const lowerInput = input.toLowerCase();
-            
-            if (lowerInput.includes('weather') || lowerInput.includes('mausam')) {
-                return "This week's forecast: Mostly sunny with temperatures between 22-28°C. Light rain expected on Wednesday. Good conditions for wheat flowering stage. 🌤️";
-            } else if (lowerInput.includes('fertilizer') || lowerInput.includes('khad')) {
-                return "For wheat at flowering stage, apply 40 kg Nitrogen per acre as Urea. Also consider Zinc supplementation if not applied earlier. Soil test recommended for precise recommendations. 🌾";
-            } else if (lowerInput.includes('market') || lowerInput.includes('bhav')) {
-                return "Current mandi prices: Wheat ₹2,150/quintal (↑50), Basmati Rice ₹4,200/quintal (↑100), Cotton ₹5,800/quintal (↓150). Prices expected to rise next week. 📈";
-            } else if (lowerInput.includes('crop') || lowerInput.includes('fasal')) {
-                return "Based on your soil type (loam) and location (Punjab), recommended crops: Wheat, Rice, Cotton, Maize. Consider crop rotation to maintain soil health. 🔄";
-            } else if (lowerInput.includes('disease') || lowerInput.includes('bimari')) {
-                return "Wheat rust appears as orange-yellow pustules on leaves. For prevention, use resistant varieties and apply fungicide at first sign. Avoid over-irrigation. 🦠";
-            } else if (lowerInput.includes('irrigation') || lowerInput.includes('sinchai')) {
-                return "For wheat at flowering stage: irrigate every 7-10 days depending on soil moisture. Check soil 2 inches deep - if dry, time to irrigate. 💧";
-            } else {
-                return "I can help with crop advice, weather information, disease diagnosis, market prices, and government schemes. What would you like to know? 🌾";
-            }
-        }
+function handleChatEnter(event, chatId) {
+    if (event.key === 'Enter') {
+        sendMessage(chatId);
+    }
+}
 
-        function startVoiceInput() {
-            showNotification("Voice input activated. Speak now...");
-            // In a real app, this would use the Web Speech API
-            setTimeout(() => {
-                showNotification("Voice input received: 'What is the weather forecast?'");
-                quickChat('weather');
-            }, 2000);
-        }
+function quickChat(topic) {
+    const questions = {
+        'weather': 'What is the weather forecast for this week?',
+        'fertilizer': 'What fertilizer should I use for my wheat crop?',
+        'market': 'What are the current market prices for wheat?',
+        'crops': 'Which crops are best for my soil type?',
+        'disease': 'How can I identify wheat rust disease?',
+        'irrigation': 'How often should I irrigate my rice field?'
+    };
+    const messagesContainer = document.getElementById('mainChat');
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user';
+    userMessage.innerHTML = `<div class='message-content'>${questions[topic]}</div>`;
+    messagesContainer.appendChild(userMessage);
+    setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot';
+        botMessage.innerHTML = `<div class='message-content'>${getBotResponse(topic)}</div>`;
+        messagesContainer.appendChild(botMessage);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 1000);
+    showSection('chat');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
-        // Image upload functionality
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('imageAnalysis').style.display = 'block';
-                document.getElementById('analysisResult').style.display = 'none';
-                
-                // Simulate AI analysis
-                setTimeout(() => {
-                    document.getElementById('imageAnalysis').style.display = 'none';
-                    document.getElementById('analysisResult').style.display = 'block';
-                    document.getElementById('analysisResult').innerHTML = `
-                        <h4>Analysis Result</h4>
-                        <div class="status-badge status-danger">Disease Detected: Wheat Rust</div>
-                        <p style="margin-top: 10px;">Confidence: 92%</p>
-                        <p><strong>Recommendations:</strong></p>
-                        <ul style="margin-left: 20px; margin-top: 5px;">
-                            <li>Apply fungicide containing Tebuconazole</li>
-                            <li>Spray early morning or late evening</li>
-                            <li>Repeat after 10 days if necessary</li>
-                            <li>Avoid over-irrigation</li>
-                        </ul>
-                    `;
-                }, 3000);
-            }
-        }
+function getBotResponse(input) {
+    const lowerInput = input.toLowerCase();
+    if (lowerInput.includes('weather') || lowerInput.includes('mausam')) {
+        return "This week's forecast: Mostly sunny with temperatures between 22-28°C. Light rain expected on Wednesday. Good conditions for wheat flowering stage. 🌤️";
+    } else if (lowerInput.includes('fertilizer') || lowerInput.includes('khad')) {
+        return "For wheat at flowering stage, apply 40 kg Nitrogen per acre as Urea. Also consider Zinc supplementation if not applied earlier. Soil test recommended for precise recommendations. 🌾";
+    } else if (lowerInput.includes('market') || lowerInput.includes('bhav')) {
+        return "Current mandi prices: Wheat ₹2,150/quintal (↑50), Basmati Rice ₹4,200/quintal (↑100), Cotton ₹5,800/quintal (↓150). Prices expected to rise next week. 📈";
+    } else if (lowerInput.includes('crop') || lowerInput.includes('fasal')) {
+        return "Based on your soil type (loam) and location (Punjab), recommended crops: Wheat, Rice, Cotton, Maize. Consider crop rotation to maintain soil health. 🔄";
+    } else if (lowerInput.includes('disease') || lowerInput.includes('bimari')) {
+        return "Wheat rust appears as orange-yellow pustules on leaves. For prevention, use resistant varieties and apply fungicide at first sign. Avoid over-irrigation. 🦠";
+    } else if (lowerInput.includes('irrigation') || lowerInput.includes('sinchai')) {
+        return "For wheat at flowering stage: irrigate every 7-10 days depending on soil moisture. Check soil 2 inches deep - if dry, time to irrigate. 💧";
+    } else {
+        return "I can help with crop advice, weather information, disease diagnosis, market prices, and government schemes. What would you like to know? 🌾";
+    }
+}
 
-        function showDiseaseInfo(disease) {
-            const diseaseInfo = {
-                'wheat-rust': {
-                    name: 'Wheat Rust',
-                    symptoms: 'Orange-yellow pustules on leaves and stems',
-                    treatment: 'Apply fungicide containing Tebuconazole or Propiconazole'
-                },
-                'rice-blast': {
-                    name: 'Rice Blast',
-                    symptoms: 'Diamond-shaped lesions with gray centers and brown borders',
-                    treatment: 'Apply fungicides like Tricyclazole or Azoxystrobin'
-                },
-                'cotton-bollworm': {
-                    name: 'Cotton Bollworm',
-                    symptoms: 'Holes in bolls and leaves, caterpillar presence',
-                    treatment: 'Use biological controls like Trichogramma wasps or approved insecticides'
-                }
-            };
-            
-            const info = diseaseInfo[disease];
-            showNotification(`${info.name}: ${info.symptoms}. Treatment: ${info.treatment}`);
-        }
+function startVoiceInput() {
+    showNotification("Voice input activated. Speak now...");
+    setTimeout(() => {
+        showNotification("Voice input received: 'What is the weather forecast?'");
+        quickChat('weather');
+    }, 2000);
+}
 
-        // NEW FUNCTIONS FOR IMPROVED SECTIONS
-        
-        // Crop Calendar
-        function generateCalendar() {
-            const calendarGrid = document.querySelector('.calendar-grid');
-            // Clear existing days (keeping headers)
-            while (calendarGrid.children.length > 7) {
-                calendarGrid.removeChild(calendarGrid.lastChild);
-            }
-            
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            
-            // First day of month
-            const firstDay = new Date(year, month, 1);
-            // Last day of month
-            const lastDay = new Date(year, month + 1, 0);
-            
-            // Days in month
-            const daysInMonth = lastDay.getDate();
-            
-            // Start day of week (0 = Sunday, 1 = Monday, etc.)
-            const startDay = firstDay.getDay();
-            
-            // Add empty cells for days before the first day of month
-            for (let i = 0; i < startDay; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'calendar-day';
-                calendarGrid.appendChild(emptyDay);
-            }
-            
-            // Add days of the month
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'calendar-day';
-                
-                // Check if today
-                if (i === today.getDate() && month === today.getMonth()) {
-                    dayElement.classList.add('today');
-                }
-                
-                // Add some sample tasks on specific days
-                if ([5, 12, 19, 26].includes(i)) {
-                    dayElement.classList.add('has-task');
-                    dayElement.innerHTML = `${i}<br><span style="font-size:10px;">💧</span>`;
-                } else {
-                    dayElement.textContent = i;
-                }
-                
-                calendarGrid.appendChild(dayElement);
-            }
-        }
-        
-        function changeCalendarMonth(direction) {
-            // This would update the calendar to show next/previous month
-            showNotification(`Calendar navigation would show ${direction > 0 ? 'next' : 'previous'} month`);
-            generateCalendar();
-        }
-        
-        // Profile Section Functions
-        function showFieldInfo(fieldId) {
-            // Highlight the field info
-            const fieldInfo = document.getElementById(`fieldInfo${fieldId}`);
-            if (fieldInfo) {
-                fieldInfo.style.display = 'block';
-            }
-        }
-        
-        function editProfile() {
-            showNotification("Edit profile feature would open a form to update your information");
-        }
-        
-        function changePassword() {
-            showNotification("Change password feature would open a form to update your password");
-        }
-        
-        function exportData() {
-            showNotification("Preparing your data for export...");
-            setTimeout(() => {
-                showNotification("Your farm data has been exported successfully!");
-            }, 2000);
-        }
-        
-        // Modal Functions
-        function showLogoutModal() {
-            document.getElementById('logoutModal').style.display = 'flex';
-        }
-        
-        function showDeactivateModal() {
-            document.getElementById('deactivateModal').style.display = 'flex';
-        }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        
-        function performLogout() {
-            showNotification("Logging out...");
-            closeModal('logoutModal');
-            setTimeout(() => {
-                alert("You have been logged out successfully. Redirecting to login page.");
-                // In a real app, this would redirect to login page
-            }, 1000);
-        }
-        
-        function performDeactivation() {
-            showNotification("Deactivating your account...");
-            closeModal('deactivateModal');
-            setTimeout(() => {
-                alert("Your account has been deactivated. We're sorry to see you go!");
-                // In a real app, this would deactivate the account
-            }, 1500);
-        }
+// Image upload functionality
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        document.getElementById('imageAnalysis').style.display = 'block';
+        document.getElementById('analysisResult').style.display = 'none';
+        setTimeout(() => {
+            document.getElementById('imageAnalysis').style.display = 'none';
+            document.getElementById('analysisResult').style.display = 'block';
+            document.getElementById('analysisResult').innerHTML = `
+                <h4>Analysis Result</h4>
+                <div class="status-badge status-danger">Disease Detected: Wheat Rust</div>
+                <p style="margin-top: 10px;">Confidence: 92%</p>
+                <p><strong>Recommendations:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Apply fungicide containing Tebuconazole</li>
+                    <li>Spray early morning or late evening</li>
+                    <li>Repeat after 10 days if necessary</li>
+                    <li>Avoid over-irrigation</li>
+                </ul>
+            `;
+        }, 3000);
+    }
+}
 
-        // Notification system
-        function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = message;
-            
-            // Add to body
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-            
-            // Remove after 5 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 5000);
+function showDiseaseInfo(disease) {
+    const diseaseInfo = {
+        'wheat-rust': {
+            name: 'Wheat Rust',
+            symptoms: 'Orange-yellow pustules on leaves and stems',
+            treatment: 'Apply fungicide containing Tebuconazole or Propiconazole'
+        },
+        'rice-blast': {
+            name: 'Rice Blast',
+            symptoms: 'Diamond-shaped lesions with gray centers and brown borders',
+            treatment: 'Apply fungicides like Tricyclazole or Azoxystrobin'
+        },
+        'cotton-bollworm': {
+            name: 'Cotton Bollworm',
+            symptoms: 'Holes in bolls and leaves, caterpillar presence',
+            treatment: 'Use biological controls like Trichogramma wasps or approved insecticides'
         }
+    };
+    const info = diseaseInfo[disease];
+    showNotification(`${info.name}: ${info.symptoms}. Treatment: ${info.treatment}`);
+}
 
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up drag and drop for image upload
-            const imageUpload = document.getElementById('imageUpload');
-            
-            imageUpload.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('dragover');
-            });
-            
-            imageUpload.addEventListener('dragleave', function() {
-                this.classList.remove('dragover');
-            });
-            
-            imageUpload.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('dragover');
-                
-                // Simulate file input
-                if (e.dataTransfer.files.length) {
-                    document.getElementById('imageInput').files = e.dataTransfer.files;
-                    handleImageUpload({target: {files: e.dataTransfer.files}});
-                }
-            });
-            
-            // Generate calendar
-            generateCalendar();
-            
-            // Show welcome notification
-            setTimeout(() => {
-                showNotification("Welcome to CropCare! How can I help with your farming today? 🌾");
-            }, 1000);
-        });
+// Crop Calendar
+function generateCalendar() {
+    const calendarGrid = document.querySelector('.calendar-grid');
+    while (calendarGrid.children.length > 7) {
+        calendarGrid.removeChild(calendarGrid.lastChild);
+    }
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startDay = firstDay.getDay();
+    for (let i = 0; i < startDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day';
+        calendarGrid.appendChild(emptyDay);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        if (i === today.getDate() && month === today.getMonth()) {
+            dayElement.classList.add('today');
+        }
+        if ([5, 12, 19, 26].includes(i)) {
+            dayElement.classList.add('has-task');
+            dayElement.innerHTML = `${i}<br><span style="font-size:10px;">💧</span>`;
+        } else {
+            dayElement.textContent = i;
+        }
+        calendarGrid.appendChild(dayElement);
+    }
+}
+
+function changeCalendarMonth(direction) {
+    showNotification(`Calendar navigation would show ${direction > 0 ? 'next' : 'previous'} month`);
+    generateCalendar();
+}
+
+// Profile Section Functions
+function showFieldInfo(fieldId) {
+    const fieldInfo = document.getElementById(`fieldInfo${fieldId}`);
+    if (fieldInfo) {
+        fieldInfo.style.display = 'block';
+    }
+}
+
+function editProfile() {
+    showNotification("Edit profile feature would open a form to update your information");
+}
+
+function changePassword() {
+    showNotification("Change password feature would open a form to update your password");
+}
+
+function exportData() {
+    showNotification("Preparing your data for export...");
+    setTimeout(() => {
+        showNotification("Your farm data has been exported successfully!");
+    }, 2000);
+}
+
+// Modal Functions
+function showLogoutModal() {
+    document.getElementById('logoutModal').style.display = 'flex';
+}
+
+function showDeactivateModal() {
+    document.getElementById('deactivateModal').style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function performLogout() {
+    showNotification("Logging out...");
+    closeModal('logoutModal');
+    setTimeout(() => {
+        // Clear login state
+        localStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("isLoggedIn");
+        // Redirect to login page
+        window.location.replace("index.html");
+    }, 1000);
+}
+
+function performDeactivation() {
+    showNotification("Deactivating your account...");
+    closeModal('deactivateModal');
+    setTimeout(() => {
+        alert("Your account has been deactivated. We're sorry to see you go!");
+    }, 1500);
+}
+
+// Notification system
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 5000);
+}
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    // Check login state first
+    const isLoggedIn =
+        localStorage.getItem("isLoggedIn") === "true" ||
+        sessionStorage.getItem("isLoggedIn") === "true";
+    if (!isLoggedIn) {
+        window.location.replace("index.html");
+        return;
+    }
+    const imageUpload = document.getElementById('imageUpload');
+    imageUpload.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    imageUpload.addEventListener('dragleave', function() {
+        this.classList.remove('dragover');
+    });
+    imageUpload.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+            document.getElementById('imageInput').files = e.dataTransfer.files;
+            handleImageUpload({target: {files: e.dataTransfer.files}});
+        }
+    });
+    generateCalendar();
+    setTimeout(() => {
+        showNotification("Welcome to CropCare! How can I help with your farming today? 🌾");
+    }, 1000);
+});
     </script>
 </body>
+
 </html>
